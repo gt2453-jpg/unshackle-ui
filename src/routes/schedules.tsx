@@ -5,6 +5,7 @@ import type { ScheduleRecord } from '../server/scheduler/store';
 import Button from '$lib/components/Button';
 import Card from '$lib/components/Card';
 import EmptyState from '$lib/components/EmptyState';
+import { notify } from '$lib/components/Notifications';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -29,11 +30,19 @@ function Schedules() {
 	const update = useMutation({
 		mutationFn: ({ id, state }: { id: string; state: 'active' | 'paused' }) =>
 			schedules.state(id, state),
-		onSuccess: () => client.invalidateQueries({ queryKey: ['schedules'] })
+		onSuccess: (_, variables) => {
+			notify(variables.state === 'paused' ? 'Agendamento pausado.' : 'Agendamento reativado.');
+			return client.invalidateQueries({ queryKey: ['schedules'] });
+		},
+		onError: (error) => notify(error.message, 'error')
 	});
 	const remove = useMutation({
 		mutationFn: schedules.remove,
-		onSuccess: () => client.invalidateQueries({ queryKey: ['schedules'] })
+		onSuccess: () => {
+			notify('Agendamento excluído.');
+			return client.invalidateQueries({ queryKey: ['schedules'] });
+		},
+		onError: (error) => notify(error.message, 'error')
 	});
 	return (
 		<main className="mx-auto max-w-4xl space-y-5 px-4 py-8">

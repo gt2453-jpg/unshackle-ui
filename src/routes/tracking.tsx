@@ -6,6 +6,7 @@ import Button from '$lib/components/Button';
 import Card from '$lib/components/Card';
 import EmptyState from '$lib/components/EmptyState';
 import Icon from '$lib/components/Icon';
+import { notify } from '$lib/components/Notifications';
 import OptionForm from '$lib/components/OptionForm';
 import Overlay from '$lib/components/Overlay';
 import { ADVANCED_FIELDS } from '$lib/download';
@@ -44,8 +45,11 @@ function TrackingPage() {
 		try {
 			await fn();
 			await refresh();
+			notify('Ação realizada com sucesso.');
 		} catch (e) {
-			setError(trackingErrorMessage(e));
+			const message = trackingErrorMessage(e);
+			setError(message);
+			notify(message, 'error');
 		} finally {
 			setBusy(null);
 		}

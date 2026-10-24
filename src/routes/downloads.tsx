@@ -10,6 +10,7 @@ import EmptyState from '$lib/components/EmptyState';
 import Icon from '$lib/components/Icon';
 import InputPrompt from '$lib/components/InputPrompt';
 import { Notice } from '$lib/components/JobPromptModal';
+import { notify } from '$lib/components/Notifications';
 import { isActive, isFinished, isQueued, jobView } from '$lib/job';
 import { useMask } from '$lib/stores/incognito';
 
@@ -83,8 +84,11 @@ function Downloads() {
 		setActionError(null);
 		try {
 			await api.clearFinishedJobs();
+			notify('Downloads finalizados removidos.');
 		} catch (e) {
-			setActionError(errorMessage(e));
+			const message = errorMessage(e);
+			setActionError(message);
+			notify(message, 'error');
 		}
 		await query.refetch();
 	}
@@ -95,8 +99,13 @@ function Downloads() {
 		setActionError(null);
 		try {
 			await fn();
+			notify('Ação realizada com sucesso.');
 		} catch (e) {
-			if (!(e instanceof ApiError && e.status === 409)) setActionError(errorMessage(e));
+			if (!(e instanceof ApiError && e.status === 409)) {
+				const message = errorMessage(e);
+				setActionError(message);
+				notify(message, 'error');
+			}
 		} finally {
 			setBusy((b) => {
 				const next = new Set(b);

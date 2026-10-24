@@ -8,6 +8,7 @@ import Button from '$lib/components/Button';
 import Card from '$lib/components/Card';
 import ChipSelect from '$lib/components/ChipSelect';
 import Icon from '$lib/components/Icon';
+import { notify } from '$lib/components/Notifications';
 import OptionForm, { type OptionValues } from '$lib/components/OptionForm';
 import Overlay from '$lib/components/Overlay';
 import { ADVANCED_FIELDS, blankAdvanced, buildDownloadRequest } from '$lib/download';
@@ -293,7 +294,11 @@ function TitlePage() {
 				request: makeDownloadRequest(),
 				recurrence: scheduleWeekly ? { daysOfWeek: scheduleDays, time: scheduleTime } : null
 			}),
-		onSuccess: () => setScheduleOpen(false)
+		onSuccess: () => {
+			setScheduleOpen(false);
+			notify('Agendamento criado.');
+		},
+		onError: (error) => notify(error.message, 'error')
 	});
 
 	return (

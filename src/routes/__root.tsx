@@ -14,6 +14,7 @@ import EmptyState from '$lib/components/EmptyState';
 import JobPromptModal from '$lib/components/JobPromptModal';
 import Sidebar from '$lib/components/Sidebar';
 import TrackingBanner from '$lib/components/TrackingBanner';
+import Notifications from '$lib/components/Notifications';
 import { queryClient } from '$lib/query';
 import '$lib/stores/theme';
 import '$lib/stores/accent';
@@ -87,6 +88,7 @@ function RootLayout() {
 			)}
 
 			<div className="flex h-screen overflow-hidden text-neutral-900 dark:text-neutral-100">
+				<Notifications />
 				<Sidebar />
 				<main className="flex-1 overflow-y-auto">
 					<div className="mx-auto max-w-6xl px-8 py-8">
